@@ -15,7 +15,7 @@ crontab -e
 The above example will run the script every minute to check you're logged in.
 
 ### Untested!
-It is possible the script could be run from `/etc/network/interfaces` although I haven't tested used this method.  A possible configuration for this could look like this ...
+It is possible the script could be run from `/etc/network/interfaces` although I haven't tested or used this method.  A possible configuration for this could look like this ...
 
 ```
 auto lo
