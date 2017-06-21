@@ -7,7 +7,7 @@ To install, copy `bt_login.sh` to a convenient location, edit the `user` and `pa
 ```
 crontab -e
 
-* * * * * bt_login.sh 1>/dev/null 2>&1
+* * * * * /path/to/bt_login.sh 1>/dev/null 2>&1
 ```
 
 The above example will run the script every minute to check you're logged in.
