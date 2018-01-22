@@ -1,7 +1,7 @@
-#! /bin/bash
+#! /bin/sh
 
 # bt_login.sh - A simple shell script to automate BT FON logins.
-# Copyright (C) 2017  Tony Corbett, G0WFV
+# Copyright (C) 2017, 2018  Tony Corbett, G0WFV
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,45 +19,41 @@
 user=UsErNaMe
 pass=PaSsWoRd
 
-shopt -s extglob         # enables pattern lists like +(...|...)
-listOfESSID='+(BTFON|BTOpenzone|BTOpenzone-B|BTOpenzone-H|BTWi-fi|BTWifi|BTWiFI-with-FON|BTWifi-with-FON|_BTWi-fi)'
-currentESSID=$(/sbin/iwgetid | sed 's/.*\"\(.*\)\".*/\1/g')
 processName=$(echo $0 | /bin/sed 's/.*\/\(.*\)/\1/g')
 pid=$$
 
-foo=$(/usr/bin/wget "https://www.btopenzone.com:8443/home" --no-check-certificate --no-cache --timeout 30 -O - 2>/dev/null)
-
-if [ $? -ne 0 ]
-then
-	/usr/bin/logger -t $processName --id=$pid "There isn't an internet connection. Exiting."
-	exit $?
+if [ $1 -ge 1 2>/dev/null ]; then
+	sleepTime=$1
 fi
 
-loggedIn=$(echo $foo | /bin/grep 'now logged on to BT Wi-fi')
+while true; do
+	foo=$(/usr/bin/wget https://192.168.23.21:8443/home --no-check-certificate --timeout=30 --tries=1 -O - -o /dev/null)
 
-if [ $? -eq 0 ]
-then
-	/usr/bin/logger -t $processName --id=$pid "You're already logged in. Nowt to do!"
-	exit 0
-else
-	case "$currentESSID" in
-		$listOfESSID)
-			/usr/bin/logger -t $processName --id=$pid "$currentESSID is a valid Wifi network. Logging in ... "
-			foo=$(/usr/bin/wget -qO - --no-check-certificate --no-cache --post-data "username=$user&password=$pass" "https://www.btopenzone.com:8443/tbbLogon")
-			loggedIn=$(echo $foo | /bin/grep 'now logged on to BT Wi-fi')
+	if [ $? -ne 0 ]; then
+		/usr/bin/logger -t $processName[$pid] "Not connected to a BT Wi-fi hotspot."
+	else
+		loggedIn=$(echo $foo | /bin/grep 'now logged in to BT Wi-fi')
 
-			if [ $? -eq 0 ]
-			then
-				/usr/bin/logger -t $processName --id=$pid "Success!"
-				exit 0
+		if [ $? -eq 0 ]; then
+			/usr/bin/logger -t $processName[$pid] "Already logged in. Nowt to do!"
+		else
+			/usr/bin/logger -t $processName[$pid] "Attempting log on ... "
+			foo=$(/usr/bin/wget "https://192.168.23.21:8443/wbacOpen?username=$user&password=$pass" --no-check-certificate --no-cache --timeout=30 --tries=1 -O - -o /dev/null)
+			loggedIn=$(echo $foo | /bin/grep "wbacClose")
+
+			if [ $? -eq 0 ]; then
+				/usr/bin/logger -t $processName[$pid] "Success!"
 			else
-				/usr/bin/logger -t $processName --id=$pid "Oops!"
-				exit 1
+				/usr/bin/logger -t $processName[$pid] "Oops!"
 			fi
-		;;
+		fi
+	fi
 
-		*)
-			/usr/bin/logger -t $processName --id=$pid "$currentESSID is not in the list of valid Wifi networks."
-			exit 1
-	esac
-fi
+	if [ $sleepTime -ge 1 2>/dev/null ]; then
+		/usr/bin/logger -t $processName[$pid] "Checking again in $sleepTime seconds ..."
+		sleep $sleepTime
+	else
+		exit 0
+	fi
+done
+
