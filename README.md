@@ -53,9 +53,9 @@ Add the script to `/etc/rc.local` either through `ssh` or in Luci (System > Star
 exit 0
 ````
 
-... and reboot your router.
+Next you need to either add `btopenzone.com` to the "Domain whitelist" or disable "Rebind protection" in Luci (Network > DHCP and DNS)
 
-The script accepts an optional command line argument.  This makes it loop indefinitely checking the connection every x seconds.  Without the command line arguement, it checks the connection once and terminates (crontab mode)
+Finally, reboot your router.
 
 ### Untested!
 It is possible the script could be run from `/etc/network/interfaces` although I haven't tested or used this method.  A possible configuration for this could look like this ...
