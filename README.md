@@ -55,8 +55,6 @@ exit 0
 
 ... and reboot your router.
 
-The script accepts an optional command line argument.  This makes it loop indefinitely checking the connection every x seconds.  Without the command line arguement, it checks the connection once and terminates (crontab mode)
-
 ### Untested!
 It is possible the script could be run from `/etc/network/interfaces` although I haven't tested or used this method.  A possible configuration for this could look like this ...
 
