@@ -71,7 +71,7 @@ EOF
 done
 
 while true; do
-	foo=$(/usr/bin/wget https://www.btopenzone.com:8443/home --no-check-certificate --timeout=$timeout --tries=1 -O - -o /dev/null)
+	foo=$(/usr/bin/wget https://192.168.23.21:8443/home --no-check-certificate --timeout=$timeout --tries=1 -O - -o /dev/null)
 
 	if [ $? -ne 0 ]; then
 		[ $syslog ] && /usr/bin/logger -t $processName[$pid] "Not connected to a BT Wi-fi hotspot."
@@ -82,7 +82,7 @@ while true; do
 			[ $syslog ] && /usr/bin/logger -t $processName[$pid] "Already logged in. Nowt to do!"
 		else
 			[ $syslog ] && /usr/bin/logger -t $processName[$pid] "Attempting log on ... "
-			foo=$(/usr/bin/wget "https://www.btopenzone.com:8443/wbacOpen?username=$user&password=$pass" --no-check-certificate --no-cache --timeout=$timeout --tries=1 -O - -o /dev/null)
+			foo=$(/usr/bin/wget "https://192.168.23.21:8443/wbacOpen?username=$user&password=$pass" --no-check-certificate --no-cache --timeout=$timeout --tries=1 -O - -o /dev/null)
 			loggedIn=$(echo $foo | /bin/grep "wbacClose")
 
 			if [ $? -eq 0 ]; then
