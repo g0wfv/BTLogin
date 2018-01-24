@@ -47,13 +47,11 @@ EOF
 
 			-s|--syslog)
 				syslog=true
-				echo syslog
 				shift
 			;;
 
 			-t|--timeout)
 				timeout=$2
-				echo timeout=$timeout
 				shift
 				shift
 			;;
@@ -61,7 +59,6 @@ EOF
 			*)
 				if [ $1 -ge 1 2>/dev/null ] && [ $1 -gt 0 ]; then
 					sleepTime=$1
-					echo sleeptime=$sleepTime
 				fi
 				shift
 			;;
@@ -120,7 +117,6 @@ parseCommandLine $@
 # Try to login ...
 while true; do
 	doLogin
-	echo $?
   
 	if [ $sleepTime -ge 1 2>/dev/null ]; then
 		[ $syslog ] && /usr/bin/logger -t $processName[$pid] "Checking again in $sleepTime seconds ..."
