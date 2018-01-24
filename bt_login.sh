@@ -22,35 +22,79 @@ pass=PaSsWoRd
 processName=$(echo $0 | /bin/sed 's/.*\/\(.*\)/\1/g')
 pid=$$
 
-if [ $1 -ge 1 2>/dev/null ]; then
-	sleepTime=$1
-fi
+# Parse command line arguments ...
+
+sleepTime=0
+timeout=30
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		-h|--help)
+			cat << EOF
+$processName - A simple shell script to automate BT FON logins.
+Copyright (C) 2017, 2018  Tony Corbett, G0WFV
+
+Usage:
+    $processName [-h|--help] [-s|--syslog] [-t|--timeout n] [wait]
+
+Options:
+    -h      --help         Display this help
+    -s      --syslog       Log result to syslog
+    -t n    --timeout n    Wait n seconds for a reply [default 30]
+    wait                   An integer value to wait between checks.
+                           The script will loop continuously checking your login
+                           status. Without it, the script will check once and
+                           terminate.
+
+EOF
+		exit 0
+		;;
+
+		-s|--syslog)
+			syslog=true
+			shift
+   		 ;;
+
+		-t|--timeout)
+			timeout=$2
+			shift
+			shift
+		;;
+
+		*)
+			if [ $1 -ge 1 2>/dev/null ] && [ $1 -gt 0 ]; then
+				sleepTime=$1
+			fi
+			shift
+		;;
+	esac
+done
 
 while true; do
-	foo=$(/usr/bin/wget https://192.168.23.21:8443/home --no-check-certificate --timeout=30 --tries=1 -O - -o /dev/null)
+	foo=$(/usr/bin/wget https://192.168.23.21:8443/home --no-check-certificate --timeout=$timeout --tries=1 -O - -o /dev/null)
 
 	if [ $? -ne 0 ]; then
-		/usr/bin/logger -t $processName[$pid] "Not connected to a BT Wi-fi hotspot."
+		[ $syslog ] && /usr/bin/logger -t $processName[$pid] "Not connected to a BT Wi-fi hotspot."
 	else
 		loggedIn=$(echo $foo | /bin/grep 'now logged in to BT Wi-fi')
 
 		if [ $? -eq 0 ]; then
-			/usr/bin/logger -t $processName[$pid] "Already logged in. Nowt to do!"
+			[ $syslog ] && /usr/bin/logger -t $processName[$pid] "Already logged in. Nowt to do!"
 		else
-			/usr/bin/logger -t $processName[$pid] "Attempting log on ... "
-			foo=$(/usr/bin/wget "https://192.168.23.21:8443/wbacOpen?username=$user&password=$pass" --no-check-certificate --no-cache --timeout=30 --tries=1 -O - -o /dev/null)
+			[ $syslog ] && /usr/bin/logger -t $processName[$pid] "Attempting log on ... "
+			foo=$(/usr/bin/wget "https://192.168.23.21:8443/wbacOpen?username=$user&password=$pass" --no-check-certificate --no-cache --timeout=$timeout --tries=1 -O - -o /dev/null)
 			loggedIn=$(echo $foo | /bin/grep "wbacClose")
 
 			if [ $? -eq 0 ]; then
-				/usr/bin/logger -t $processName[$pid] "Success!"
+				[ $syslog ] && /usr/bin/logger -t $processName[$pid] "Success!"
 			else
-				/usr/bin/logger -t $processName[$pid] "Oops!"
+				[ $syslog ] && /usr/bin/logger -t $processName[$pid] "Oops!"
 			fi
 		fi
 	fi
 
 	if [ $sleepTime -ge 1 2>/dev/null ]; then
-		/usr/bin/logger -t $processName[$pid] "Checking again in $sleepTime seconds ..."
+		[ $syslog ] && /usr/bin/logger -t $processName[$pid] "Checking again in $sleepTime seconds ..."
 		sleep $sleepTime
 	else
 		exit 0

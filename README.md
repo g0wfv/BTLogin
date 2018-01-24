@@ -2,6 +2,21 @@
 
 BTLogin is a simple shell script to automate BT FON logins in a headless environment when a GUI web browser is not available.
 
+### Usage
+
+````
+bt_login.sh [-h|--help] [-s|--syslog] [-t|--timeout n] [wait]
+
+    Options:
+        -h      --help         Display this help
+        -s      --syslog       Log result to syslog
+        -t n    --timeout n    Wait n seconds for a reply [default 30]
+        wait                   An integer value to wait between checks.
+                               The script will loop continuously checking your login
+                               status. Without it, the script will check once and
+                               terminate.
+````
+
 ### Tested
 
 To install, copy `bt_login.sh` to a convenient location, edit the `user` and `pass` variables to suit.
