@@ -19,7 +19,7 @@ bt_login.sh [-h|--help] [-s|--syslog] [-t|--timeout n] [wait]
 
 ### Tested
 
-There are a few ways to install this script.  If you plan to run this on OpenWRT, ensure you install the full `wget` package via Luci or ssh ...
+There are a few ways to install this script.  If you plan to run this on OpenWRT, ensure you install the full `wget` package via Luci or `ssh` ...
 
 ````
 opkg update
@@ -57,6 +57,8 @@ exit 0
 3. (RECOMMENDED) Install the `travelmate` package and set `bt_login.sh` as an Auto Login Script.
 
 ````
+opkg update
+opkg install travelmate luci-app-travelmate
 ln -s /path/to/bt_login.sh /etc/travelmate/BTWifi-with-FON.login
 ````
 
