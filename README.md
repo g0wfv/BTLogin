@@ -19,14 +19,21 @@ bt_login.sh [-h|--help] [-s|--syslog] [-t|--timeout n] [wait]
 
 ### Tested
 
-To install, copy `bt_login.sh` to a convenient location, edit the `user` and `pass` variables to suit.
+There are a few ways to install this script.  If you plan to run this on OpenWRT, ensure you install the full `wget` package via Luci or ssh ...
+
+````
+opkg update
+opkg install wget
+````
+
+Place `bt_login.sh` in a convenient location and edit the `user` and `pass` variables to suit.
 
 ````
 wget https://raw.githubusercontent.com/g0wfv/BTLogin/master/bt_login.sh
 chmod a+x bt_login.sh
 ````
 
-BTLogin can be run either run as a cron job ...
+1. Run as a cron job ...
 
 ```
 crontab -e
@@ -36,14 +43,8 @@ crontab -e
 
 The above example will run the script every minute.
 
-... or if you plan to run this on OpenWRT/LEDE you need to install the full `wget` package via Luci or `ssh` ...
 
-````
-opkg update
-opkg install wget
-````
-
-Add the script to `/etc/rc.local` either through `ssh` or in Luci (System > Startup)
+2. Add the script to `/etc/rc.local` either through `ssh` or in Luci (System > Startup)
 
 ````
 # Put your custom commands here that should be executed once
@@ -53,7 +54,16 @@ Add the script to `/etc/rc.local` either through `ssh` or in Luci (System > Star
 exit 0
 ````
 
-... and reboot your router.
+3. (RECOMMENDED) Install the `travelmate` package and set `bt_login.sh` as an Auto Login Script.
+
+. 1
+````
+ln -s /path/to/bt_login.sh /etc/travelmate/bt_login.login
+````
+
+![travelmate image](https://github.com/g0wfv/BTLogin/raw/master/travelmate.png "Travelmate config")
+
+Finally, reboot your router!
 
 ### Untested!
 It is possible the script could be run from `/etc/network/interfaces` although I haven't tested or used this method.  A possible configuration for this could look like this ...
@@ -75,3 +85,4 @@ The script first checks that you have an internet connection by seeing if it can
 
 ### Future development
 It is very conceivable that this script could be used as the basis for other open Wifi hotspots (o2, Virgin Media, etc) that require you to log in via a web form.  If you do use this script in this manner, please consider submitting the resulting script as an extra, ie, `o2_login.sh` or similar. 
+
