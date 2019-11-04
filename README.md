@@ -56,9 +56,8 @@ exit 0
 
 3. (RECOMMENDED) Install the `travelmate` package and set `bt_login.sh` as an Auto Login Script.
 
-. 1
 ````
-ln -s /path/to/bt_login.sh /etc/travelmate/bt_login.login
+ln -s /path/to/bt_login.sh /etc/travelmate/BTWifi-with-FON.login
 ````
 
 ![travelmate image](https://github.com/g0wfv/BTLogin/raw/master/travelmate.png "Travelmate config")
