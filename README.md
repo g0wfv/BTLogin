@@ -32,17 +32,21 @@ Place `bt_login.sh` in a convenient location and edit the `user` and `pass` vari
 wget https://raw.githubusercontent.com/g0wfv/BTLogin/master/bt_login.sh
 chmod a+x bt_login.sh
 ````
+You can then choose from __*one*__ of the following 3 methods below ...
 
-1. Run as a cron job ...
+1. Install the `travelmate` package and set `bt_login.sh` as an Auto Login Script.  *__(Recommended)__*
 
-```
-crontab -e
+`travelmate` is a wlan connection manager for travel routers.  It has built in captive portal detection (the annoying login screen you get before it lets you onto the internet!) and can execute a script to automatically login.  After sucessfully using method 2 (below) for a number of months, I have now migrated to this method which is working even more reliably and more appropriately, runs only when needed.
 
-* * * * * /path/to/bt_login.sh >/dev/null 2>&1
-```
+````
+opkg update
+opkg install travelmate luci-app-travelmate
+ln -s /path/to/bt_login.sh /etc/travelmate/BTWifi-with-FON.login
+````
+Although you can configure `travelmate` through the command line, it is far more convenient to configure it via Luci as in this picture (Services > Travelmate / Wireless Stations / Edit) ... 
 
-The above example will run the script every minute.
 
+![travelmate image](https://github.com/g0wfv/BTLogin/raw/master/travelmate.png "Travelmate config")
 
 2. Add the script to `/etc/rc.local` either through `ssh` or in Luci (System > Startup)
 
@@ -54,15 +58,15 @@ The above example will run the script every minute.
 exit 0
 ````
 
-3. (RECOMMENDED) Install the `travelmate` package and set `bt_login.sh` as an Auto Login Script.
+3. Run as a cron job ...
 
-````
-opkg update
-opkg install travelmate luci-app-travelmate
-ln -s /path/to/bt_login.sh /etc/travelmate/BTWifi-with-FON.login
-````
+```
+crontab -e
 
-![travelmate image](https://github.com/g0wfv/BTLogin/raw/master/travelmate.png "Travelmate config")
+* * * * * /path/to/bt_login.sh >/dev/null 2>&1
+```
+
+The above example will run the script every minute.
 
 Finally, reboot your router!
 
