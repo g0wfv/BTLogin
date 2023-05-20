@@ -157,8 +157,8 @@ checkLoginServer() {
 # The "--insecure" flag is used to disable SSL certificate validation, and 
 # the "--connect-timeout" flag sets the maximum time allowed for the connection attempt.
 doLogin() {
-    [ $debug ] && echo "Attempting log on to BT Wi-Fi... "
-    [ $syslog ] && /usr/bin/logger -t "$processName[$pid]" "Attempting log on to BT Wi-Fi... "
+    [ $debug ] && echo "Attempting logon to BT Wi-Fi... "
+    [ $syslog ] && /usr/bin/logger -t "$processName[$pid]" "Attempting logon to BT Wi-Fi... "
     foo=$(curl -s "$logonURL" \
         --data-urlencode "username=$user" \
         --data-urlencode "password=$pass" \

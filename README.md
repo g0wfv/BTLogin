@@ -32,7 +32,7 @@ opkg install wget
 Place `bt_wifi_login.sh` in a convenient location and edit the `user` and `pass` variables to suit.
 
 ````
-wget https://raw.githubusercontent.com/g0wfv/BTLogin/master/bt_login.sh
+wget https://raw.githubusercontent.com/davidesewell/BTWiFiLogin/master/bt_login.sh
 chmod a+x bt_wifi_login.sh
 ````
 
@@ -42,7 +42,7 @@ To auto start the script when the device boots, add the script to `/etc/rc.local
 # Put your custom commands here that should be executed once
 # the system init finished. By default this file does nothing.
 
-/path/to/bt_wifi_login.sh -s 20 &
+/path/to/bt_wifi_login.sh -s 20 >/dev/null 2>&1 &
 
 exit 0
 ````
